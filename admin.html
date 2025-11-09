@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панелі - ShopKZ</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">🛍️ ShopKZ - Админ</h1>
+                <nav>
+                    <a href="index.html" data-translate="nav.home">Басты бет</a>
+                    <a href="#products" data-translate="nav.products">Өнімдер</a>
+                    <a href="#orders" data-translate="admin.orders">Тапсырыстар</a>
+                </nav>
+                <div class="header-actions">
+                    <button class="lang-btn" id="langBtn">Қаз</button>
+                    <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display: none;" data-translate="admin.logout">Шығу</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal show">
+        <div class="modal-content login-modal">
+            <h2 data-translate="admin.login">Админ панеліне кіру</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label data-translate="admin.password">Пароль</label>
+                    <input type="password" id="adminPassword" required autofocus placeholder="Парольді енгізіңіз">
+                </div>
+                <div id="loginError" class="error-message" style="display: none; color: var(--danger-color); margin-bottom: 1rem; font-weight: 600;"></div>
+                <button type="submit" class="btn-primary" data-translate="admin.loginBtn">Кіру</button>
+            </form>
+        </div>
+    </div>
+
+    <main class="admin-main" id="adminContent" style="display: none;">
+        <div class="container">
+            <section id="products" class="admin-section">
+                <h2 data-translate="admin.products">Өнімдерді басқару</h2>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <button class="btn-primary" id="addProductBtn" data-translate="admin.addProduct">Жаңа өнім қосу</button>
+                    <button class="btn-secondary" id="importProductsBtn" data-translate="admin.importProducts">Импорттау</button>
+                    <button class="btn-secondary" id="exportProductsBtn" data-translate="admin.exportProducts">Экспорттау</button>
+                    <button class="btn-danger" id="deleteAllProductsBtn" onclick="deleteAllProducts()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                        🗑️ Барлық тауарды жою
+                    </button>
+                    <button class="btn-danger" id="selectDeleteBtn" onclick="deleteSelectedProducts()" style="display: none;">
+                        ❌ Таңдап жою (<span id="selectedCount">0</span>)
+                    </button>
+                    <button class="btn-secondary" id="startSelectBtn" onclick="toggleSelectMode()">
+                        ✅ Таңдау режимі
+                    </button>
+                    <button class="btn-secondary" id="cancelSelectBtn" onclick="cancelSelectMode()" style="display: none;">
+                        ✖️ Болдырмау
+                    </button>
+                </div>
+
+                <!-- Прогресс добавления товаров -->
+                <div id="scrapingProgress" style="display: none; margin-bottom: 1.5rem; padding: 1.5rem; background: #f0f0f0; border-radius: 8px; border: 2px solid var(--primary-color);">
+                    <h3 style="margin-top: 0; margin-bottom: 1rem;" id="scrapingTitle">Тауарлар қосылуда...</h3>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span id="scrapingStatusText">Қосылуда...</span>
+                            <span id="scrapingPercent">0%</span>
+                        </div>
+                        <div style="width: 100%; height: 25px; background: #ddd; border-radius: 12px; overflow: hidden;">
+                            <div id="scrapingProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color), #4CAF50); transition: width 0.3s; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);" id="scrapedCount">0</div>
+                                <div style="color: var(--text-light);">Табылды</div>
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #4CAF50;" id="addedCount">0</div>
+                                <div style="color: var(--text-light);">Қосылды</div>
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #ff9800;" id="duplicateCount">0</div>
+                                <div style="color: var(--text-light);">Дубликаттар</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="scrapingLog" style="max-height: 200px; overflow-y: auto; background: white; padding: 1rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.6;">
+                        <div style="color: var(--text-light);">Процесс басталды...</div>
+                    </div>
+                </div>
+                
+                <div class="products-table-container">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th id="selectAllHeader" style="display: none; width: 50px;">
+                                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                                </th>
+                                <th data-translate="admin.table.image">Сурет</th>
+                                <th data-translate="admin.table.name">Атауы</th>
+                                <th data-translate="admin.table.category">Категория</th>
+                                <th data-translate="admin.table.gender">Жыныс</th>
+                                <th data-translate="admin.table.price">Баға</th>
+                                <th data-translate="admin.table.actions">Әрекеттер</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="orders" class="admin-section">
+                <h2 data-translate="admin.orders">Тапсырыстар</h2>
+                <div id="ordersList" class="orders-list">
+                    <!-- Orders will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Import Products Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeImportModal()">&times;</span>
+            <h2 data-translate="admin.importProducts">Товарларды импорттау</h2>
+            <form id="importForm">
+                <div class="form-group">
+                    <label data-translate="admin.importMethod">Импорт әдісі</label>
+                    <select id="importMethod" onchange="toggleImportMethod()">
+                        <option value="excel" data-translate="admin.importExcel">Excel файл</option>
+                        <option value="json" data-translate="admin.importJSON">JSON файл</option>
+                        <option value="text" data-translate="admin.importText">JSON мәтіні</option>
+                        <option value="localstorage">localStorage (Браузер консольінен)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="localStorageGroup" style="display: none;">
+                    <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <strong>📋 Инструкция:</strong>
+                        <ol style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+                            <li>Откройте сайт Nike (nike.com) или Adidas (adidas.com/kz/)</li>
+                            <li>Нажмите F12 для открытия консоли</li>
+                            <li>Откройте файл <code>scrape-nike-adidas-console.js</code></li>
+                            <li>Скопируйте весь код и вставьте в консоль</li>
+                            <li>Нажмите Enter - скрипт соберет все товары</li>
+                            <li>Вернитесь в админ панель и нажмите "Импорттау"</li>
+                        </ol>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="importFromLocalStorage()" style="width: 100%;">
+                        📥 Импорттау localStorage-тан
+                    </button>
+                </div>
+                <div class="form-group" id="excelFileGroup">
+                    <label data-translate="admin.selectFile">Файлды таңдау</label>
+                    <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" onchange="handleFileSelect(event)">
+                    <small style="color: var(--text-light); margin-top: 0.5rem; display: block;">
+                        Excel форматы: A1=name, B1=description, C1=price, D1=image, E1=category, F1=gender
+                    </small>
+                </div>
+                <div class="form-group" id="jsonFileGroup" style="display: none;">
+                    <label data-translate="admin.selectFile">Файлды таңдау</label>
+                    <input type="file" id="jsonFile" accept=".json" onchange="handleFileSelect(event)">
+                </div>
+                <div class="form-group" id="jsonTextGroup" style="display: none;">
+                    <label data-translate="admin.pasteJSON">JSON мәтінін қою</label>
+                    <textarea id="jsonText" rows="10" placeholder='[{"name":"Товар","description":"Сипаттама","price":10000,"image":"url","category":"sneakers","gender":"women"}]'></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="replaceExisting" checked>
+                        <span data-translate="admin.replaceExisting">Барлық товарларды ауыстыру</span>
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" data-translate="admin.import">Импорттау</button>
+                    <button type="button" class="btn-secondary" onclick="closeImportModal()" data-translate="form.cancel">Болдырмау</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle" data-translate="admin.addProduct">Жаңа өнім қосу</h2>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label data-translate="form.name">Атауы</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label data-translate="form.description">Сипаттама</label>
+                    <textarea id="productDescription" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label data-translate="form.price">Баға (₸)</label>
+                    <input type="number" id="productPrice" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label data-translate="form.image">Сурет URL</label>
+                    <input type="url" id="productImage" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-group">
+                    <label data-translate="form.category">Категория</label>
+                    <select id="productCategory" required>
+                        <option value="sneakers" data-translate="filters.sneakers">Кроссовки</option>
+                        <option value="shirts" data-translate="filters.shirts">Жейделер</option>
+                        <option value="pants" data-translate="filters.pants">Шалбарлар</option>
+                        <option value="jackets" data-translate="filters.jackets">Жакеттер</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-translate="form.gender">Жыныс</label>
+                    <select id="productGender" required>
+                        <option value="women" data-translate="filters.women">Әйелдер</option>
+                        <option value="men" data-translate="filters.men">Ерлер</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" data-translate="form.save">Сақтау</button>
+                    <button type="button" class="btn-secondary" id="cancelBtn" data-translate="form.cancel">Болдырмау</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="translations.js"></script>
+    <script src="api.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
+

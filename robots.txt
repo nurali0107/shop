@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Disallow: /admin.html
+
+# Google
+User-agent: Googlebot
+Allow: /
+Disallow: /admin.html
+
+# Sitemap
+Sitemap: https://shopkz.kz/sitemap.xml
+
+
+
+
