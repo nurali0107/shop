@@ -1,19 +1,33 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /api/
 
 # Yandex
 User-agent: Yandex
 Allow: /
 Disallow: /admin.html
+Disallow: /api/
+Crawl-delay: 1
 
 # Google
 User-agent: Googlebot
 Allow: /
 Disallow: /admin.html
+Disallow: /api/
+Crawl-delay: 0
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /admin.html
+Disallow: /api/
 
 # Sitemap
-Sitemap: https://shopkz.kz/sitemap.xml
+Sitemap: https://shop-wxui.onrender.com/sitemap.xml
+
+# Host
+Host: https://shop-wxui.onrender.com
 
 
 
