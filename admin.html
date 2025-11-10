@@ -217,9 +217,14 @@
                     <label data-translate="form.category">Категория</label>
                     <select id="productCategory" required>
                         <option value="sneakers" data-translate="filters.sneakers">Кроссовки</option>
-                        <option value="shirts" data-translate="filters.shirts">Жейделер</option>
-                        <option value="pants" data-translate="filters.pants">Шалбарлар</option>
-                        <option value="jackets" data-translate="filters.jackets">Жакеттер</option>
+                        <option value="winter">Кыстык (Зима)</option>
+                        <option value="summer">Жаздык (Лето)</option>
+                        <option value="nike">Nike</option>
+                        <option value="adidas">Adidas</option>
+                        <option value="puma">Puma</option>
+                        <option value="newbalance">New Balance</option>
+                        <option value="vans">Vans</option>
+                        <option value="reebok">Reebok</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -228,6 +233,16 @@
                         <option value="women" data-translate="filters.women">Әйелдер</option>
                         <option value="men" data-translate="filters.men">Ерлер</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Модель кроссовок (для SEO)</label>
+                    <input type="text" id="productModel" placeholder="Например: Nike Air Max 270, Adidas Ultraboost 22">
+                    <small style="color: var(--text-light);">Укажите модель для лучшего SEO (Nike Air Max, Adidas Yeezy, и т.д.)</small>
+                </div>
+                <div class="form-group">
+                    <label>Дополнительные фото (URL через запятую)</label>
+                    <textarea id="productImages" rows="3" placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"></textarea>
+                    <small style="color: var(--text-light);">Можно указать несколько URL через запятую для галереи</small>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn-primary" data-translate="form.save">Сақтау</button>

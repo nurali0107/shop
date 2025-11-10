@@ -466,35 +466,91 @@ const defaultProducts = [
 // Reviews (will be loaded from API)
 let reviews = [];
 
-// Default reviews for fallback
+// Default reviews for fallback (на русском языке, о кроссовках)
 const defaultReviews = [
     {
         id: 1,
-        name: 'Айгүл',
-        text: 'Тапсырыс бердім, керемет! Сапасы өте жақсы, 100% оригинал. Ұсынылады!',
+        name: 'Александр',
+        text: 'Купил кроссовки Nike Air Max 270. Очень доволен покупкой! Качество отличное, 100% оригинал. Доставка быстрая, пришло в срок. Рекомендую этот магазин!',
         rating: 5,
         date: '2024-01-15'
     },
     {
         id: 2,
-        name: 'Ерлан',
-        text: 'Кроссовки сатып алдым, өте қанағаттанарлық. Жеткізу тез болды.',
+        name: 'Елена',
+        text: 'Заказала кроссовки Adidas Ultraboost 22. Прекрасное качество, удобные, стильные. Цена адекватная. Доставка через Казпочту без проблем. Спасибо!',
         rating: 5,
         date: '2024-01-20'
     },
     {
         id: 3,
-        name: 'Мария',
-        text: 'Өте жақсы дүкен! Барлық киімдер оригинал, бағасы да тиімді.',
+        name: 'Дмитрий',
+        text: 'Приобрел кроссовки Nike Dunk Low. Очень понравились! Оригинальные, качественные, стильные. Быстрая доставка по Алматы. Теперь только здесь покупаю кроссовки!',
         rating: 5,
         date: '2024-01-25'
     },
     {
         id: 4,
-        name: 'Нұрлан',
-        text: 'Тапсырыс бердім, керемет! Сапасы өте жақсы, 100% оригинал. Ұсынылады!',
+        name: 'Мария',
+        text: 'Купила кроссовки Adidas Yeezy Boost 350. Шикарные кроссовки! Качество премиум, очень удобные. Доставка в Астану заняла 12 дней. Рекомендую магазин ShopKZ!',
         rating: 5,
         date: '2024-02-01'
+    },
+    {
+        id: 5,
+        name: 'Артем',
+        text: 'Заказал кроссовки Puma Suede Classic. Отличное качество, удобные, стильные. Цена приятная. Доставка бесплатная, пришло быстро. Буду заказывать еще!',
+        rating: 5,
+        date: '2024-02-05'
+    },
+    {
+        id: 6,
+        name: 'Анна',
+        text: 'Купила кроссовки New Balance 574. Очень довольна! Качественные, комфортные, оригинальные. Доставка в Шымкент без проблем. Отличный магазин кроссовок!',
+        rating: 5,
+        date: '2024-02-10'
+    },
+    {
+        id: 7,
+        name: 'Максим',
+        text: 'Приобрел кроссовки Nike Air Force 1. Классика! Оригинальные, качественные, стильные. Доставка через Казпочту в Караганду. Рекомендую всем!',
+        rating: 5,
+        date: '2024-02-15'
+    },
+    {
+        id: 8,
+        name: 'Ольга',
+        text: 'Заказала кроссовки Vans Old Skool. Прекрасные кроссовки! Качество отличное, удобные, стильные. Быстрая доставка. Теперь заказываю только здесь!',
+        rating: 5,
+        date: '2024-02-20'
+    },
+    {
+        id: 9,
+        name: 'Иван',
+        text: 'Купил кроссовки Reebok Classic Leather. Отличное качество, комфортные, оригинальные. Доставка в Павлодар быстрая. Рекомендую магазин ShopKZ!',
+        rating: 5,
+        date: '2024-02-25'
+    },
+    {
+        id: 10,
+        name: 'Юлия',
+        text: 'Заказала кроссовки Adidas Stan Smith. Классические кроссовки! Качество превосходное, удобные, стильные. Доставка бесплатная. Отличный магазин!',
+        rating: 5,
+        date: '2024-03-01'
+    },
+    {
+        id: 11,
+        name: 'Сергей',
+        text: 'Приобрел кроссовки Nike Air Max 270. Очень доволен! Качество отличное, оригинальные, удобные. Доставка в Актобе быстрая. Рекомендую всем любителям кроссовок!',
+        rating: 5,
+        date: '2024-03-05'
+    },
+    {
+        id: 12,
+        name: 'Наталья',
+        text: 'Купила кроссовки Puma RS-X. Шикарные кроссовки! Ретро стиль, качество отличное, удобные. Доставка через Казпочту без проблем. Спасибо ShopKZ!',
+        rating: 5,
+        date: '2024-03-10'
     }
 ];
 
@@ -502,10 +558,39 @@ const defaultReviews = [
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Initialize
+// Toggle reviews section
+function toggleReviews() {
+    const reviewsSection = document.getElementById('reviews');
+    const showReviewsBtn = document.getElementById('showReviewsBtn');
+    
+    if (!reviewsSection || !showReviewsBtn) return;
+    
+    if (reviewsSection.style.display === 'none' || !reviewsSection.style.display) {
+        // Show reviews
+        reviewsSection.style.display = 'block';
+        loadReviews(); // Load reviews when showing
+        
+        // Update button text using translations
+        showReviewsBtn.setAttribute('data-translate', 'reviews.hideButton');
+        translatePage();
+        
+        // Scroll to reviews section
+        setTimeout(() => {
+            reviewsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    } else {
+        // Hide reviews
+        reviewsSection.style.display = 'none';
+        
+        // Update button text using translations
+        showReviewsBtn.setAttribute('data-translate', 'reviews.showButton');
+        translatePage();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
-    // Load products and reviews from API
+    // Load products from API (reviews will load when button is clicked)
     await loadProducts();
-    await loadReviews();
     updateCartCount();
     setupEventListeners();
     translatePage();
@@ -605,8 +690,31 @@ function setupEventListeners() {
         phoneInput.addEventListener('input', formatPhoneNumber);
     }
 
-    // Gender filter buttons
-    updateFilterButtons();
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mainNav.classList.toggle('active');
+        });
+        
+        // Close menu when clicking on a link
+        mainNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mainNav.classList.remove('active');
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mainNav.contains(e.target) && !menuToggle.contains(e.target)) {
+                menuToggle.classList.remove('active');
+                mainNav.classList.remove('active');
+            }
+        });
+    }
 }
 
 async function loadReviews() {
@@ -659,8 +767,9 @@ async function loadProducts() {
         filterProducts();
     } catch (error) {
         console.error('Error loading products from API, falling back to localStorage:', error);
-        // Fallback to localStorage (но не defaultProducts - они только для первого запуска)
-        products = JSON.parse(localStorage.getItem('products')) || [];
+        // Fallback to localStorage - загружаем все товары из localStorage
+        const allProducts = JSON.parse(localStorage.getItem('products')) || [];
+        products = allProducts;
         // Если в localStorage тоже пусто, оставляем пустой массив
         filterProducts();
     }
@@ -672,7 +781,6 @@ let selectedCategory = 'all';
 
 function selectGender(gender) {
     selectedGender = gender;
-    selectedCategory = 'all';
     
     // Update button states
     document.querySelectorAll('.filter-btn[data-gender]').forEach(btn => {
@@ -682,16 +790,7 @@ function selectGender(gender) {
         }
     });
     
-    // Show/hide category section
-    const categorySection = document.getElementById('categorySection');
-    if (gender !== 'all') {
-        categorySection.style.display = 'block';
-        loadCategoryButtons(gender);
-    } else {
-        categorySection.style.display = 'none';
-    }
-    
-    // Reload products from API when filters change
+    // Reload products from API when gender changes
     loadProducts();
 }
 
@@ -760,17 +859,63 @@ function filterProducts() {
     // Products are already loaded in loadProducts()
     let filteredProducts = [...products];
     
-    // Filter by gender
+    // Filter by gender first
     if (selectedGender !== 'all') {
         filteredProducts = filteredProducts.filter(product => {
-            return product.gender === selectedGender;
+            // Check if product has gender field, or infer from name/description
+            const productGender = product.gender || '';
+            const productName = (product.name || '').toLowerCase();
+            const productDesc = (product.description || '').toLowerCase();
+            
+            if (productGender) {
+                return productGender === selectedGender;
+            }
+            
+            // Infer gender from name/description
+            if (selectedGender === 'women') {
+                return productName.includes('женск') || productName.includes('women') || 
+                       productName.includes('әйел') || productDesc.includes('женск') || 
+                       productDesc.includes('women') || productDesc.includes('әйел');
+            }
+            if (selectedGender === 'men') {
+                return productName.includes('мужск') || productName.includes('men') || 
+                       productName.includes('ерлер') || productDesc.includes('мужск') || 
+                       productDesc.includes('men') || productDesc.includes('ерлер');
+            }
+            
+            return true;
         });
     }
     
     // Filter by category
     if (selectedCategory !== 'all') {
         filteredProducts = filteredProducts.filter(product => {
-            return product.category === selectedCategory;
+            const productName = (product.name || '').toLowerCase();
+            const productDesc = (product.description || '').toLowerCase();
+            const productCategory = (product.category || '').toLowerCase();
+            
+            // Check for brand
+            if (selectedCategory === 'nike') {
+                return productName.includes('nike') || productDesc.includes('nike');
+            }
+            if (selectedCategory === 'adidas') {
+                return productName.includes('adidas') || productDesc.includes('adidas');
+            }
+            if (selectedCategory === 'puma') {
+                return productName.includes('puma') || productDesc.includes('puma');
+            }
+            if (selectedCategory === 'newbalance') {
+                return productName.includes('new balance') || productName.includes('newbalance') || 
+                       productDesc.includes('new balance') || productDesc.includes('newbalance');
+            }
+            if (selectedCategory === 'vans') {
+                return productName.includes('vans') || productDesc.includes('vans');
+            }
+            if (selectedCategory === 'reebok') {
+                return productName.includes('reebok') || productDesc.includes('reebok');
+            }
+            
+            return productCategory === selectedCategory;
         });
     }
     
@@ -836,9 +981,9 @@ function filterProducts() {
             <div class="product-info">
                 <h3 class="product-name" itemprop="name">${product.name}</h3>
                 <p class="product-description" itemprop="description">${product.description}</p>
-                <div class="product-category">
+                <div class="product-category" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
                     <span class="category-badge">${getCategoryName(product.category)}</span>
-                    <span class="gender-badge">${getGenderName(product.gender)}</span>
+                    ${getGenderBadge(product)}
                 </div>
                 <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                     <span itemprop="price" content="${product.price}">${formatPrice(product.price)}</span>
@@ -867,36 +1012,56 @@ function getCategoryName(category) {
     return names[category] || category;
 }
 
-function getGenderName(gender) {
-    const names = {
-        'women': 'Әйелдер',
-        'men': 'Ерлер'
-    };
-    return names[gender] || gender;
+function getGenderBadge(product) {
+    const productGender = product.gender || '';
+    const productName = (product.name || '').toLowerCase();
+    const productDesc = (product.description || '').toLowerCase();
+    
+    let gender = '';
+    if (productGender === 'women' || productGender === 'women') {
+        gender = 'women';
+    } else if (productGender === 'men' || productGender === 'men') {
+        gender = 'men';
+    } else if (productName.includes('женск') || productName.includes('women') || productName.includes('әйел') ||
+               productDesc.includes('женск') || productDesc.includes('women') || productDesc.includes('әйел')) {
+        gender = 'women';
+    } else if (productName.includes('мужск') || productName.includes('men') || productName.includes('ерлер') ||
+               productDesc.includes('мужск') || productDesc.includes('men') || productDesc.includes('ерлер')) {
+        gender = 'men';
+    }
+    
+    if (gender === 'women') {
+        return '<span class="gender-badge" style="background: #ff6b9d; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">👩 Женские</span>';
+    } else if (gender === 'men') {
+        return '<span class="gender-badge" style="background: #4dabf7; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">👨 Мужские</span>';
+    }
+    return '';
 }
+
 
 function clearFilters() {
     selectedGender = 'all';
     selectedCategory = 'all';
     
     // Reset button states
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    document.querySelectorAll('.filter-btn[data-gender]').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelectorAll('.filter-btn[data-category]').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // Set "all" button active
-    const allBtn = document.querySelector('.filter-btn[data-gender="all"]');
-    if (allBtn) {
-        allBtn.classList.add('active');
+    // Set "all" buttons active
+    const allGenderBtn = document.querySelector('.filter-btn[data-gender="all"]');
+    if (allGenderBtn) {
+        allGenderBtn.classList.add('active');
+    }
+    const allCategoryBtn = document.querySelector('.filter-btn[data-category="all"]');
+    if (allCategoryBtn) {
+        allCategoryBtn.classList.add('active');
     }
     
-    // Hide category section
-    const categorySection = document.getElementById('categorySection');
-    if (categorySection) {
-        categorySection.style.display = 'none';
-    }
-    
-    filterProducts();
+    loadProducts();
 }
 
 function updateProductsCount(filteredCount, totalCount) {
@@ -916,11 +1081,24 @@ function updateFilterInfo() {
     
     let info = '';
     if (selectedGender !== 'all') {
-        info += getGenderName(selectedGender);
+        const genderNames = {
+            'women': currentLang === 'kk' ? 'Әйелдер' : 'Женские',
+            'men': currentLang === 'kk' ? 'Ерлер' : 'Мужские'
+        };
+        info = genderNames[selectedGender] || '';
     }
+    
     if (selectedCategory !== 'all') {
+        const categoryNames = {
+            'nike': 'Nike',
+            'adidas': 'Adidas',
+            'puma': 'Puma',
+            'newbalance': 'New Balance',
+            'vans': 'Vans',
+            'reebok': 'Reebok'
+        };
         if (info) info += ' → ';
-        info += getCategoryName(selectedCategory);
+        info += categoryNames[selectedCategory] || getCategoryName(selectedCategory);
     }
     
     if (info) {
@@ -1043,11 +1221,79 @@ function viewProduct(productId) {
     const productDetails = document.getElementById('productDetails');
     if (!productModal || !productDetails) return;
 
+    // Get multiple images from product (support for images array or single image)
+    const images = product.images && Array.isArray(product.images) ? product.images : 
+                   (product.image ? [product.image] : []);
+    
+    let currentImageIndex = 0;
+
+    const renderGallery = () => {
+        if (images.length === 0) {
+            return '<div class="product-image" style="margin-bottom: 1.5rem; width: 100%; height: 300px; display: flex; align-items: center; justify-content: center; background: var(--bg-light); border-radius: 10px;"><span style="font-size: 4rem;">🛍️</span></div>';
+        }
+        
+        return `
+            <div class="product-gallery" style="position: relative; margin-bottom: 1.5rem;">
+                <div class="gallery-main" style="position: relative; width: 100%; height: 400px; overflow: hidden; border-radius: 10px; background: var(--bg-light);">
+                    <img id="galleryMainImage" src="${images[currentImageIndex]}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="nextImage()">
+                    ${images.length > 1 ? `
+                        <button class="gallery-nav gallery-prev" onclick="prevImage()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; z-index: 10;">‹</button>
+                        <button class="gallery-nav gallery-next" onclick="nextImage()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; z-index: 10;">›</button>
+                        <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">${currentImageIndex + 1} / ${images.length}</div>
+                    ` : ''}
+                </div>
+                ${images.length > 1 ? `
+                    <div class="gallery-thumbnails" style="display: flex; gap: 0.5rem; margin-top: 1rem; overflow-x: auto; padding: 0.5rem 0;">
+                        ${images.map((img, idx) => `
+                            <img src="${img}" alt="Thumbnail ${idx + 1}" onclick="setImageIndex(${idx})" 
+                                 style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid ${idx === currentImageIndex ? 'var(--primary-color)' : 'transparent'}; opacity: ${idx === currentImageIndex ? '1' : '0.6'};">
+                        `).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    };
+
+    // Global functions for gallery navigation
+    window.nextImage = () => {
+        currentImageIndex = (currentImageIndex + 1) % images.length;
+        updateGallery();
+    };
+    
+    window.prevImage = () => {
+        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+        updateGallery();
+    };
+    
+    window.setImageIndex = (idx) => {
+        currentImageIndex = idx;
+        updateGallery();
+    };
+    
+    const updateGallery = () => {
+        const galleryMain = productDetails.querySelector('.product-gallery');
+        if (galleryMain) {
+            const mainImg = productDetails.querySelector('#galleryMainImage');
+            if (mainImg) mainImg.src = images[currentImageIndex];
+            
+            const thumbnails = productDetails.querySelectorAll('.gallery-thumbnails img');
+            thumbnails.forEach((thumb, idx) => {
+                thumb.style.border = `2px solid ${idx === currentImageIndex ? 'var(--primary-color)' : 'transparent'}`;
+                thumb.style.opacity = idx === currentImageIndex ? '1' : '0.6';
+            });
+            
+            const counter = productDetails.querySelector('.gallery-main > div:last-child');
+            if (counter) counter.textContent = `${currentImageIndex + 1} / ${images.length}`;
+        }
+    };
+
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
     productDetails.innerHTML = `
         <div style="text-align: center;" itemscope itemtype="https://schema.org/Product">
-            <div class="product-image" style="margin-bottom: 1.5rem;">
-                ${product.image ? `<img src="${product.image}" alt="${product.name} - ${product.description}" itemprop="image" style="width: 100%; height: 100%; object-fit: cover;">` : '<span itemprop="image">🛍️</span>'}
-            </div>
+            ${renderGallery()}
             <h2 style="margin-bottom: 1rem;" itemprop="name">${product.name}</h2>
             <p style="color: var(--text-light); margin-bottom: 1.5rem;" itemprop="description">${product.description}</p>
             <div class="product-price" style="margin-bottom: 1.5rem;" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
@@ -1058,6 +1304,32 @@ function viewProduct(productId) {
             <button class="btn btn-primary" onclick="addToCart(${product.id}); closeProductModal();" data-translate="products.addToCart">Себетке қосу</button>
         </div>
     `;
+
+    // Add touch event listeners for swipe
+    const galleryMain = productDetails.querySelector('.gallery-main');
+    if (galleryMain && images.length > 1) {
+        galleryMain.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        galleryMain.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+    }
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                nextImage();
+            } else {
+                prevImage();
+            }
+        }
+    }
 
     productModal.classList.add('show');
     translatePage();

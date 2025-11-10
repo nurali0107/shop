@@ -994,12 +994,12 @@ async function loadProducts() {
             <td>
                 ${product.image 
                     ? `<img src="${product.image}" alt="${product.name}" class="table-image">`
-                    : '<div class="table-image-placeholder">👕</div>'
+                    : '<div class="table-image-placeholder">👟</div>'
                 }
             </td>
             <td><strong>${product.name}</strong></td>
             <td><span class="category-badge">${categoryName}</span></td>
-            <td><span class="gender-badge">${genderName}</span></td>
+            <td><span class="gender-badge" style="background: ${product.gender === 'women' ? '#ff6b9d' : '#4dabf7'}; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">${genderName}</span></td>
             <td><strong>${formatPrice(product.price)}</strong></td>
             <td>
                 <div class="table-actions" style="display: ${selectMode ? 'none' : 'flex'};">
@@ -1311,6 +1311,8 @@ function openProductModal(productId = null) {
             document.getElementById('productImage').value = product.image || '';
             document.getElementById('productCategory').value = product.category || 'sneakers';
             document.getElementById('productGender').value = product.gender || 'women';
+            document.getElementById('productModel').value = product.model || '';
+            document.getElementById('productImages').value = (product.images && Array.isArray(product.images) ? product.images.join(', ') : '') || '';
             
             if (modalTitle) {
                 modalTitle.setAttribute('data-translate', 'admin.editProduct');
@@ -1321,6 +1323,8 @@ function openProductModal(productId = null) {
         document.getElementById('productId').value = '';
         document.getElementById('productCategory').value = 'sneakers';
         document.getElementById('productGender').value = 'women';
+        document.getElementById('productModel').value = '';
+        document.getElementById('productImages').value = '';
         if (modalTitle) {
             modalTitle.setAttribute('data-translate', 'admin.addProduct');
         }
@@ -1348,6 +1352,9 @@ async function handleProductSubmit(e) {
     const image = document.getElementById('productImage').value;
     const category = document.getElementById('productCategory').value;
     const gender = document.getElementById('productGender').value;
+    const model = document.getElementById('productModel').value || '';
+    const imagesText = document.getElementById('productImages').value || '';
+    const images = imagesText.split(',').map(url => url.trim()).filter(url => url);
     const brand = document.getElementById('productBrand')?.value || '';
 
     if (!name || !description || !price || !category || !gender) {
@@ -1362,6 +1369,8 @@ async function handleProductSubmit(e) {
         image,
         category,
         gender,
+        model,
+        images: images.length > 0 ? images : undefined,
         brand
     };
 
